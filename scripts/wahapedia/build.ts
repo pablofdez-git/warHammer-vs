@@ -17,6 +17,7 @@ import {
   parseTraits,
   requireStat,
 } from './convert.ts';
+import { defaultWeapons, parseLoadout } from './loadout.ts';
 
 export interface RawTables {
   factions: Row[];
@@ -39,7 +40,7 @@ const EXCLUDED_ROLES = new Set(['Fortifications']);
 // Columnas que se usan de cada tabla: si Wahapedia cambia alguna, el importador avisa
 export function checkColumns(tables: RawTables): void {
   requireColumns(tables.factions, ['id', 'name'], 'Factions.csv');
-  requireColumns(tables.datasheets, ['id', 'name', 'faction_id', 'role', 'virtual'], 'Datasheets.csv');
+  requireColumns(tables.datasheets, ['id', 'name', 'faction_id', 'role', 'loadout', 'virtual'], 'Datasheets.csv');
   requireColumns(
     tables.models,
     ['datasheet_id', 'line', 'name', 'M', 'T', 'Sv', 'inv_sv', 'W', 'Ld', 'OC'],
@@ -74,7 +75,7 @@ function byLine(a: Row, b: Row): number {
   return Number(a.line) - Number(b.line) || Number(a.line_in_wargear ?? 0) - Number(b.line_in_wargear ?? 0);
 }
 
-function buildModel(row: Row, unitName: string): ModelProfile {
+function buildModel(row: Row, unitName: string, loadout: string[]): ModelProfile {
   const what = `${unitName} / ${row.name}`;
   return {
     name: row.name,
@@ -85,6 +86,7 @@ function buildModel(row: Row, unitName: string): ModelProfile {
     wounds: requireStat(row.W, `${what}: H`),
     leadership: parseStat(row.Ld),
     oc: parseStat(row.OC),
+    loadout,
   };
 }
 
@@ -179,11 +181,20 @@ export function buildUnitsFile(tables: RawTables, factionIds: string[]): BuildRe
     }
 
     const unitKeywords = [...new Set((keywords.get(sheet.id) ?? []).map((k) => k.keyword))];
-    const unitModels = [...(models.get(sheet.id) ?? [])].sort(byLine).map((m) => buildModel(m, sheet.name));
     const unitWeapons = [...(wargear.get(sheet.id) ?? [])]
       .sort(byLine)
       .map((w) => buildWeapon(w, sheet.name, warnings))
       .filter((w): w is WeaponProfile => w !== undefined);
+    const loadout = parseLoadout(sheet.loadout);
+    const weaponNames = unitWeapons.map((w) => w.name);
+    const unitModels = [...(models.get(sheet.id) ?? [])]
+      .sort(byLine)
+      .map((m) => buildModel(m, sheet.name, defaultWeapons(loadout, m.name, weaponNames)));
+    for (const model of unitModels) {
+      if (model.loadout.length === 0 && unitWeapons.length > 0) {
+        warnings.push(`${sheet.faction_id} ${sheet.name} / ${model.name}: loadout sin leer (usará todas las armas)`);
+      }
+    }
     const points = buildPoints(costs.get(sheet.id) ?? []);
 
     // Sin perfil, sin armas o sin puntos no se puede combatir con ella ni reclutarla

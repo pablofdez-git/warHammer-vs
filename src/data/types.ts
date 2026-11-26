@@ -16,6 +16,8 @@ export interface ModelProfile {
   wounds: number;            // H
   leadership: number | null; // L: 6 significa 6+
   oc: number | null;         // control de objetivo
+  loadout: string[];         // nombres de las armas (de UnitData.weapons) que lleva por defecto;
+                             // vacío si no se pudo leer: entonces se usan todas
 }
 
 export interface WeaponProfile {

@@ -8,12 +8,12 @@ function tables(): RawTables {
   return {
     factions: parseCsv('id|name|link|\nORK|Orks||\nSM|Space Marines||\n'),
     datasheets: parseCsv(
-      'id|name|faction_id|role|virtual|\n' +
-        '1|Boyz|ORK|Battleline|false|\n' +
-        '2|Squig|ORK|Beast|true|\n' +           // virtual: fuera
-        '3|Bunker|ORK|Fortifications|false|\n' + // fortificación: fuera
-        '4|Sin armas|ORK|Infantry|false|\n' +    // sin armas: fuera, con aviso
-        '5|Intercessors|SM|Battleline|false|\n'  // otra facción
+      'id|name|faction_id|role|loadout|virtual|\n' +
+        '1|Boyz|ORK|Battleline|<b>Every Boss Nob is equipped with:</b> 1 Choppa.<br><br><b>Every Boy is equipped with:</b> 1 Slugga; 1 Choppa.|false|\n' +
+        '2|Squig|ORK|Beast||true|\n' +           // virtual: fuera
+        '3|Bunker|ORK|Fortifications||false|\n' + // fortificación: fuera
+        '4|Sin armas|ORK|Infantry||false|\n' +    // sin armas: fuera, con aviso
+        '5|Intercessors|SM|Battleline||false|\n'  // otra facción
     ),
     models: parseCsv(
       'datasheet_id|line|name|M|T|Sv|inv_sv|W|Ld|OC|\n' +
@@ -61,7 +61,9 @@ test('monta la unidad: perfiles y armas en orden, puntos sin repetir', () => {
   assert.deepEqual(boyz.models.map((m) => m.name), ['Boss Nob', 'Boy']);
   assert.deepEqual(boyz.models[1], {
     name: 'Boy', move: 6, toughness: 5, save: 5, invuln: null, wounds: 1, leadership: 7, oc: 2,
+    loadout: ['Slugga', 'Choppa'], // en el orden de las armas de la unidad
   });
+  assert.deepEqual(boyz.models[0].loadout, ['Choppa']); // el Nob lleva solo lo suyo
   assert.deepEqual(boyz.weapons.map((w) => w.name), ['Slugga', 'Choppa']);
   assert.deepEqual(boyz.weapons[1], {
     name: 'Choppa', type: 'melee', range: null, attacks: '3', skill: 3, strength: 4, ap: -1, damage: '1', traits: [],
