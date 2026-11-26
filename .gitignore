@@ -1,0 +1,13 @@
+out
+dist
+node_modules
+.vscode-test/
+*.vsix
+
+# CSV de Wahapedia descargados a mano (los procesa scripts/import-wahapedia.ts)
+data/raw/
+desktop.ini
+
+# Los scripts se ejecutan en TypeScript directamente: si aparece un .js aquí, es una compilación sobrante
+scripts/**/*.js
+scripts/**/*.js.map

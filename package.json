@@ -1,0 +1,73 @@
+{
+  "name": "warhammer-companion",
+  "displayName": "Warhammer Companion",
+  "description": "Juego de fans: gana Puntos de Requisa al guardar tu código y combate contactos hostiles mientras programas. No afiliado a Games Workshop.",
+  "publisher": "pablofdez",
+  "version": "0.0.1",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "warhammerCompanion.togglePause",
+        "title": "Warhammer: Pausar o reanudar"
+      },
+      {
+        "command": "warhammerCompanion.syncNow",
+        "title": "Warhammer: Sincronizar partida ahora"
+      },
+      {
+        "command": "warhammerCompanion.resetProgress",
+        "title": "Warhammer: Reiniciar progreso"
+      }
+    ],
+    "configuration": {
+      "title": "Warhammer Companion",
+      "properties": {
+        "warhammerCompanion.syncFolder": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "markdownDescription": "Carpeta donde guardar la copia de la partida para compartirla entre ordenadores. Si está vacía, se usa la carpeta `WarhammerCompanion` dentro del OneDrive de este equipo."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run clean && npm run compile",
+    "clean": "node -e \"require('fs').rmSync('out',{recursive:true,force:true})\"",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "import-data": "node scripts/import-wahapedia.ts",
+    "check:scripts": "tsc -p scripts",
+    "pretest": "npm run compile && npm run check:scripts && npm run lint",
+    "lint": "eslint src scripts",
+    "test:scripts": "node --test \"scripts/**/*.test.ts\"",
+    "test": "npm run test:scripts && vscode-test",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "24.x",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^4.0.0",
+    "eslint": "^10.5.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.1"
+  },
+  "overrides": {
+    "diff": "^8.0.4",
+    "serialize-javascript": "^7.0.6"
+  }
+}

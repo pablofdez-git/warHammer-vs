@@ -1,0 +1,16 @@
+.vscode/**
+.vscode-test/**
+src/**
+scripts/**
+data/raw/**
+.gitignore
+*.vsix
+CLAUDE.md
+.claude/**
+**/tsconfig.json
+**/eslint.config.mjs
+**/*.map
+out/test/**
+**/*.ts
+**/.vscode-test.*
+desktop.ini

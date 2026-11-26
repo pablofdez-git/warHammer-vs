@@ -1,0 +1,16 @@
+// Solo comprueba los tipos de los scripts (no genera .js): Node los ejecuta tal cual
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    // Solo sintaxis que Node puede quitar sin compilar (nada de enum ni namespace)
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": ["./**/*.ts"]
+}

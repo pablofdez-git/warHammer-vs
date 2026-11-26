@@ -1,0 +1,5 @@
+{
+  "//": "Los scripts usan módulos ES (import/export). Node los ejecuta en TypeScript directamente.",
+  "type": "module",
+  "private": true
+}
